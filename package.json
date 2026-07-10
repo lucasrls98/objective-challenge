@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "npm run lint",
     "test": "cypress run",
     "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
     "test:e2e": "cypress run --spec \"cypress/e2e/frontend/**/*.cy.js\"",

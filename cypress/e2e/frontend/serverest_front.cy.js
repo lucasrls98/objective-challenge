@@ -12,12 +12,10 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const password = faker.internet.password();
 
-      // Ação via Page Objects
       CadastroPage.acessar();
       CadastroPage.preencherFormulario(nome, email, password);
       CadastroPage.submeter();
 
-      // Validações
       cy.url().should('include', '/home');
       cy.contains('h1', 'Serverest Store').should('be.visible');
     });
@@ -27,14 +25,11 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const passwordValida = faker.internet.password();
 
-      // Preparação: API Bypass
       cy.apiCriarUsuario(nome, email, passwordValida, 'false');
 
-      // Ação via Page Objects
       LoginPage.acessar();
       LoginPage.fazerLogin(email, 'senhaInvalida123');
 
-      // Validação
       cy.contains('span', 'Email e/ou senha inválidos').should('be.visible');
     });
   });
@@ -45,7 +40,6 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const password = faker.internet.password();
 
-      // Preparação: API Bypass
       cy.apiCriarUsuario(nome, email, password, 'false');
       cy.apiLogin(email, password).then((response) => {
         const token = response.body.authorization;
@@ -56,10 +50,8 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
         });
       });
 
-      // Ação: Adiciona primeiro produto da lista
       cy.get('[data-testid="adicionarNaLista"]').first().click();
 
-      // Validação
       cy.url().should('include', '/minhaListaDeProdutos');
       cy.contains('h1', 'Lista de Compras').should('be.visible');
     });
@@ -70,7 +62,6 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const passwordAdmin = faker.internet.password();
       const nomeProduto = faker.commerce.productName() + ' ' + faker.string.uuid();
       
-      // Preparação: API Bypass
       cy.apiCriarUsuario(nomeAdmin, emailAdmin, passwordAdmin, 'true');
       cy.apiLogin(emailAdmin, passwordAdmin).then((response) => {
         const token = response.body.authorization;
@@ -81,12 +72,10 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
         });
       });
 
-      // Ação via Page Objects
       ProdutoAdminPage.acessarFormulario();
       ProdutoAdminPage.preencherFormulario(nomeProduto, '250', 'Produto exclusivo automatizado', '15');
       ProdutoAdminPage.submeter();
 
-      // Validação
       cy.url().should('include', '/admin/listarprodutos');
       cy.contains('td', nomeProduto).should('be.visible');
     });
