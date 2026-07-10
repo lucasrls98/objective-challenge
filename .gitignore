@@ -1,0 +1,14 @@
+# Dependências do Node
+node_modules/
+
+# Arquivos gerados pelo Cypress
+cypress/videos/
+cypress/screenshots/
+
+# Arquivos de ambiente e chaves (boas práticas de segurança)
+.env
+cypress.env.json
+
+# Arquivos de sistema operacional (evita sujar o repositório)
+.DS_Store
+Thumbs.db
