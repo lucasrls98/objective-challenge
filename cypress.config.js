@@ -1,23 +1,25 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
+  reporter: 'cypress-mochawesome-reporter',
+  reporterOptions: {
+    charts: true,
+    reportPageTitle: 'Relatório ServeRest - QA Objective',
+    embeddedScreenshots: true,
+    inlineAssets: true,
+    saveAllAttempts: false,
+  },
   e2e: {
-    // A baseUrl agiliza o carregamento do frontend e limpa o código nos testes (ex: cy.visit('/login'))
     baseUrl: "https://front.serverest.dev",
-    
-    // Variáveis de ambiente customizadas para o projeto
     env: {
       apiUrl: "https://serverest.dev"
     },
-
-    // Configurações recomendadas para estabilidade e CI/CD
-    defaultCommandTimeout: 10000, 
+    defaultCommandTimeout: 10000,
     video: false, 
-    screenshotOnRunFailure: true,
-
     setupNodeEvents(on, config) {
-      // implement node event listeners here
+      // Habilita o plugin de relatórios
+      require('cypress-mochawesome-reporter/plugin')(on);
+      return config;
     },
   },
 });
-

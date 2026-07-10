@@ -4,6 +4,7 @@ node_modules/
 # Arquivos gerados pelo Cypress
 cypress/videos/
 cypress/screenshots/
+cypress/reports
 
 # Arquivos de ambiente e chaves (boas práticas de segurança)
 .env

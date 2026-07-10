@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cypress run",
+    "test:api": "cypress run --spec \"cypress/e2e/api/**/*.cy.js\"",
+    "test:e2e": "cypress run --spec \"cypress/e2e/frontend/**/*.cy.js\""
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "homepage": "https://github.com/lucasrls98/objective-challenge#readme",
   "devDependencies": {
     "@faker-js/faker": "^10.5.0",
-    "cypress": "^15.18.1"
+    "cypress": "^15.18.1",
+    "cypress-mochawesome-reporter": "^4.0.2"
   }
 }
