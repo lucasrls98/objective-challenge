@@ -23,3 +23,28 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// cypress/support/commands.js
+
+Cypress.Commands.add('apiCriarUsuario', (nome, email, password, administrador = 'false') => {
+  return cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/usuarios`,
+    body: {
+      nome,
+      email,
+      password,
+      administrador
+    },
+    failOnStatusCode: false
+  });
+});
+
+Cypress.Commands.add('apiLogin', (email, password) => {
+  return cy.request({
+    method: 'POST',
+    url: `${Cypress.env('apiUrl')}/login`,
+    body: { email, password },
+    failOnStatusCode: false
+  });
+});
