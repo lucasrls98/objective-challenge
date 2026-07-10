@@ -1,11 +1,14 @@
 name: ServeRest Cypress E2E & API Tests
 
-# Define os gatilhos: o pipeline corre em cada push ou pull request para a branch main
 on:
   push:
     branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master" ]
+
+# Permissão crucial: Permite que o GitHub Actions escreva na branch do site
+permissions:
+  contents: write
 
 jobs:
   cypress-run:
@@ -27,11 +30,16 @@ jobs:
         run: npm run test
 
       - name: 📊 Guardar Relatório (Artifact)
-        # if always é crucial para que o relatório seja gerado e guardado
-        # mesmo que algum teste falhe durante a execução.
         if: always() 
         uses: actions/upload-artifact@v4
         with:
           name: relatorio-mochawesome
           path: cypress/reports/html
           retention-days: 7
+
+      - name: 🌐 Publicar Relatório no GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./cypress/reports/html
