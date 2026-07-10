@@ -1,5 +1,8 @@
 // cypress/e2e/frontend/serverest_front.cy.js
 import { faker } from '@faker-js/faker';
+import CadastroPage from '../../support/pages/CadastroPage';
+import LoginPage from '../../support/pages/LoginPage';
+import ProdutoAdminPage from '../../support/pages/ProdutoAdminPage';
 
 describe('Testes de Frontend (E2E) - ServeRest', () => {
   
@@ -9,12 +12,10 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const password = faker.internet.password();
 
-      // Ação: Navega e interage com a UI
-      cy.visit('/cadastrarusuarios');
-      cy.get('[data-testid="nome"]').type(nome);
-      cy.get('[data-testid="email"]').type(email);
-      cy.get('[data-testid="password"]').type(password);
-      cy.get('[data-testid="cadastrar"]').click();
+      // Ação via Page Objects
+      CadastroPage.acessar();
+      CadastroPage.preencherFormulario(nome, email, password);
+      CadastroPage.submeter();
 
       // Validações
       cy.url().should('include', '/home');
@@ -26,14 +27,12 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const passwordValida = faker.internet.password();
 
-      // Preparação: Cria usuário via API para garantir que ele existe
+      // Preparação: API Bypass
       cy.apiCriarUsuario(nome, email, passwordValida, 'false');
 
-      // Ação: Interage com a UI tentando logar com senha errada
-      cy.visit('/login');
-      cy.get('[data-testid="email"]').type(email);
-      cy.get('[data-testid="senha"]').type('senhaInvalida123');
-      cy.get('[data-testid="entrar"]').click();
+      // Ação via Page Objects
+      LoginPage.acessar();
+      LoginPage.fazerLogin(email, 'senhaInvalida123');
 
       // Validação
       cy.contains('span', 'Email e/ou senha inválidos').should('be.visible');
@@ -46,14 +45,10 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const email = faker.internet.email();
       const password = faker.internet.password();
 
-      // Preparação: Cria usuário e faz login via API (bypass do login de UI para ganhar velocidade)
+      // Preparação: API Bypass
       cy.apiCriarUsuario(nome, email, password, 'false');
-      
-      // O ServeRest salva o token no localStorage, podemos injetar isso via script
       cy.apiLogin(email, password).then((response) => {
         const token = response.body.authorization;
-        
-        // Entrando na página já autenticado
         cy.visit('/home', {
           onBeforeLoad(win) {
             win.localStorage.setItem('serverest/userToken', token);
@@ -61,7 +56,7 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
         });
       });
 
-      // Ação: Na tela inicial, clica no primeiro botão de adicionar à lista
+      // Ação: Adiciona primeiro produto da lista
       cy.get('[data-testid="adicionarNaLista"]').first().click();
 
       // Validação
@@ -73,10 +68,9 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const nomeAdmin = faker.person.fullName();
       const emailAdmin = faker.internet.email();
       const passwordAdmin = faker.internet.password();
-
       const nomeProduto = faker.commerce.productName() + ' ' + faker.string.uuid();
       
-      // Preparação: Cria um ADMIN via API e faz bypass no login
+      // Preparação: API Bypass
       cy.apiCriarUsuario(nomeAdmin, emailAdmin, passwordAdmin, 'true');
       cy.apiLogin(emailAdmin, passwordAdmin).then((response) => {
         const token = response.body.authorization;
@@ -87,14 +81,10 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
         });
       });
 
-      // Ação: Navega e preenche formulário de produto
-      cy.get('[data-testid="cadastrarProdutos"]').click();
-      cy.get('[data-testid="nome"]').type(nomeProduto);
-      cy.get('[data-testid="preco"]').type('250');
-      cy.get('[data-testid="descricao"]').type('Produto exclusivo automatizado');
-      cy.get('[data-testid="quantity"]').type('15');
-      
-      cy.get('[data-testid="cadastarProdutos"]').click();
+      // Ação via Page Objects
+      ProdutoAdminPage.acessarFormulario();
+      ProdutoAdminPage.preencherFormulario(nomeProduto, '250', 'Produto exclusivo automatizado', '15');
+      ProdutoAdminPage.submeter();
 
       // Validação
       cy.url().should('include', '/admin/listarprodutos');
