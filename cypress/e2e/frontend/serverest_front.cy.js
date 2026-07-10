@@ -10,7 +10,7 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       const password = faker.internet.password();
 
       // Ação: Navega e interage com a UI
-      cy.visit('/cadastrar');
+      cy.visit('/cadastrarusuarios');
       cy.get('[data-testid="nome"]').type(nome);
       cy.get('[data-testid="email"]').type(email);
       cy.get('[data-testid="password"]').type(password);
@@ -92,9 +92,9 @@ describe('Testes de Frontend (E2E) - ServeRest', () => {
       cy.get('[data-testid="nome"]').type(nomeProduto);
       cy.get('[data-testid="preco"]').type('250');
       cy.get('[data-testid="descricao"]').type('Produto exclusivo automatizado');
-      cy.get('[data-testid="quantidade"]').type('15');
+      cy.get('[data-testid="quantity"]').type('15');
       
-      cy.get('[data-testid="cadastrarProduto"]').click();
+      cy.get('[data-testid="cadastarProdutos"]').click();
 
       // Validação
       cy.url().should('include', '/admin/listarprodutos');
